@@ -136,22 +136,9 @@ bluecols <- brewer.pal(9, 'Blues')
 pie(rep(1,9), col = bluecols)
 newcol <- colorRampPalette(bluecols)
 ncols <- 100
-bluecols2 <- newcol(ncols)#apply the function to get 100 colours
+bluecols2 <- newcol(ncols)
 pie(rep(1, ncols), col = bluecols2, border = NA, labels = NA)
 
-blupur <- brewer.pal(9, 'BuPu')
-pie(rep(1,9), col = blupur)
-newcol <- colorRampPalette(blupur)
-ncols <- 100
-blupur2 <- newcol(ncols)#apply the function to get 100 colours
-pie(rep(1, ncols), col = blupur2, border = NA, labels = NA)
-
-yel <- brewer.pal(9, 'YlGnBu')
-pie(rep(1,9), col = yel)
-newcol <- colorRampPalette(yel)
-ncols <- 100
-yel2 <- newcol(ncols)#apply the function to get 100 colours
-pie(rep(1, ncols), col = yel2, border = NA, labels = NA)
 
 limit=100
 g1=var_imp1%>%
