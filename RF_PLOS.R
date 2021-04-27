@@ -1,6 +1,6 @@
 pacman::p_load(ggpubr,RColorBrewer,missRanger,ranger,utils,zip,
                randomForestSRC,rfPermute,tidyverse,curl,
-               dplyr,data.table, dtplyr, tidyfast, ggplot2,scales)
+               dplyr,data.table, dtplyr, tidyfast, ggplot2,scales,hrbrthemes)
 
 theme_set(theme_pubr(base_size=10,base_family="sans"))
 
@@ -139,6 +139,13 @@ ncols <- 100
 bluecols2 <- newcol(ncols)
 pie(rep(1, ncols), col = bluecols2, border = NA, labels = NA)
 
+yel <- brewer.pal(9, 'YlGnBu')
+pie(rep(1,9), col = yel)
+newcol <- colorRampPalette(yel)
+ncols <- 100
+yel2 <- newcol(ncols)#apply the function to get 100 colours
+pie(rep(1, ncols), col = yel2, border = NA, labels = NA)
+
 
 limit=100
 g1=var_imp1%>%
@@ -151,7 +158,7 @@ g1=var_imp1%>%
   scale_y_percent(name=NULL,suffix="%",scale=1,limits=c(0,limit))+
   annotate("text",x=2,y=0.3*limit,label=caption11,hjust = 0, vjust = 1, size = 3.5)+
   annotate("text",x=3,y=0.3*limit,label=caption12,hjust = 0, vjust = 1, size = 3.5)+
-  scale_fill_gradientn(colours = bluecols2)+
+  scale_fill_gradientn(colours = yel2)+
   theme(plot.caption = element_text(face="plain",size=10,hjust = 0.5),
         panel.grid = element_line(linetype="dotted"),
         legend.position = "none",
