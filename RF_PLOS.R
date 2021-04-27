@@ -1,11 +1,40 @@
-pacman::p_load(ggpubr,RColorBrewer,missRanger,ranger,
-               randomForestSRC,rfPermute,tidyverse,
+pacman::p_load(ggpubr,RColorBrewer,missRanger,ranger,utils,zip,
+               randomForestSRC,rfPermute,tidyverse,curl,
                dplyr,data.table, dtplyr, tidyfast, ggplot2,scales)
 
 theme_set(theme_pubr(base_size=10,base_family="sans"))
 
 
-#ranger
+
+##DOWNLOAD & READ DATA 
+
+mydir=getwd() 
+download.file("https://github.com/jbgb13/PredictorsCCP_PLOS/raw/main/dataCCP.zip", destfile ="file.zip",mode="wb" )
+zip::unzip(zipfile = "file.zip", exdir = mydir)
+
+data_aware=as.data.table(read.csv("dataCCP.csv"))%>%
+  .[,c(2:149)]
+
+data_human=data_aware[!is.na(cc_human)]%>%
+  .[!cc_human==1,b_human:=0]%>%
+  .[cc_human==1,b_human:=1]
+
+data_life=data_aware[!is.na(cc_human)]%>%
+  .[!is.na(cc_life)]
+
+data_stop=data_aware[!is.na(cc_human)]%>%
+  .[!is.na(cc_stop)]%>%
+  .[!is.na(cc_life)]
+
+data_agency=data_aware[!is.na(cc_human)]%>%
+  .[!is.na(cc_agency)]%>%
+  .[!is.na(cc_life)]%>%
+  .[cc_agency<0,b_agency:=0]%>%
+  .[cc_agency>=0,b_agency:=1]
+
+
+
+#Formulas
 
 form_cc_aware=cc_aware~
   cc_cond+cc_drought+cc_flood+religion+religious+rel_group+rel_law+migrate+pol_talk+pol_march+dem_best+
@@ -49,14 +78,11 @@ form_cc_agency=b_agency~
 
 
 
-
-
-
 #CC_AWARE
 
 set.seed(124)
 rf.Model = ranger(formula = form_cc_aware, 
-                  data = data.imp2,
+                  data = data_aware,
                   num.trees = 1000,
                   min.node.size=5,
                   importance="impurity_corrected",
@@ -64,9 +90,9 @@ rf.Model = ranger(formula = form_cc_aware,
                   verbose=TRUE)
 
 
-rf.Model
 
-paco=importance_pvalues(rf.Model, method="altmann",num.permutations = 100,formula=form_a2,data=data.imp2)
+
+paco=importance_pvalues(rf.Model, method="altmann",num.permutations = 100,formula=form_a2,data=data_aware)
 varimp=as.data.table(paco)
 
 var_imp1=data.table("variable"=names(rf.Model$variable.importance),"importance"=unname(rf.Model$variable.importance))%>%
@@ -153,7 +179,7 @@ g1
 
 set.seed(124)
 modelT = rfsrc.fast(formula = form_a2, 
-                    data = data.imp2
+                    data = data_aware
                     ,ntree = 500,
                     mtry=8,nsplit=1, 
                     nodesize=5,forest = TRUE)
