@@ -9,10 +9,11 @@ theme_set(theme_pubr(base_size=10,base_family="sans"))
 ##DOWNLOAD & READ DATA 
 
 mydir=getwd() 
-download.file("https://github.com/jbgb13/PredictorsCCP_PLOS/raw/main/dataCCP.zip", destfile ="file.zip",mode="wb" )
+download.file("https://github.com/jbgb13/PredictorsCCP_PLOS/raw/main/data.zip", destfile ="file.zip",mode="wb" )
 zip::unzip(zipfile = "file.zip", exdir = mydir)
 
-data=as.data.table(read.csv("anom_afrocc_indiv.csv",na=".",colClasses=c(race="factor",country="factor",NAME_2="factor",female="factor",agro="factor",edu="factor",urban="factor",w_language="factor",cc_aware="factor",cc_stop="factor",religion="factor",religious="factor")))
+data=as.data.table(read.csv("data.csv",colClasses=c(race="factor",country="factor",NAME_2="factor",female="factor",agro="factor",edu="factor",urban="factor",w_language="factor",cc_aware="factor",cc_stop="factor",religion="factor",religious="factor")))%>%
+  .[,2:150]
 
 data_aware=as.data.table(data)%>%
   .[,c(5:8,14:80,91,102:109)]
@@ -109,9 +110,6 @@ rf.Model = ranger(formula = form_cc_aware,
                   importance="impurity_corrected",
                   classification = T,
                   verbose=TRUE)
-
-
-  
 
 var_imp1=data.table("variable"=names(rf.Model$variable.importance),"importance"=unname(rf.Model$variable.importance))%>%
   .[variable=="news_social",variable:="News soc. media"]%>%   
@@ -260,12 +258,6 @@ rf.Model = ranger(formula = form_cc_human,
                   classification = T,
                   verbose=TRUE)
 
-
-paco=importance_pvalues(rf.Model, method="altmann",num.permutations = 100,formula=form_cc_human,data=data_human)
-varimp=as.data.table(paco)
-
-
-rf.Model
 var_imp1=data.table("variable"=names(rf.Model$variable.importance),"importance"=unname(rf.Model$variable.importance))%>%
   .[variable=="news_social",variable:="News soc. media"]%>%   
   .[variable=="news_internet",variable:="News internet"]%>%   
@@ -570,8 +562,6 @@ rf.Model = ranger(formula = form_cc_stop,
                   classification = T,
                   verbose=TRUE)
 
-
-rf.Model
 var_imp1=data.table("variable"=names(rf.Model$variable.importance),"importance"=unname(rf.Model$variable.importance))%>%
     .[variable=="news_social",variable:="News soc. media"]%>%   .[variable=="news_internet",variable:="News internet"]%>%   .[variable=="internet",variable:="Internet use"]%>%
   .[variable=="cc_cond",variable:="Agric. condn."]%>%
@@ -719,15 +709,15 @@ rf.Model = ranger(formula = form_cc_agency,
                   classification = T,
                   verbose=TRUE)
 
-paco=importance_pvalues(rf.Model, method="altmann",num.permutations = 100,formula=form_cc_agency,data=data_agency)
-varimp=as.data.table(paco)
-beep()
 
-rf.Model
 var_imp2=data.table("variable"=names(rf.Model$variable.importance),"importance"=unname(rf.Model$variable.importance))%>%
-    .[variable=="news_social",variable:="News soc. media"]%>%   .[variable=="news_internet",variable:="News internet"]%>%   .[variable=="internet",variable:="Internet use"]%>%
+  .[variable=="news_social",variable:="News soc. media"]%>%   
+  .[variable=="news_internet",variable:="News internet"]%>%   
+  .[variable=="internet",variable:="Internet use"]%>%
   .[variable=="cc_cond",variable:="Agric. condn."]%>%
-  .[variable=="news_papers",variable:="Newspapers"]%>%   .[variable=="news_television",variable:="News TV"]%>%   .[variable=="news_radio",variable:="News radio"]%>%
+  .[variable=="news_papers",variable:="Newspapers"]%>%   
+  .[variable=="news_television",variable:="News TV"]%>%   
+  .[variable=="news_radio",variable:="News radio"]%>%
   .[variable=="pol_talk",variable:="Talks politics"]%>%
   .[variable=="a2_tmp_mean",variable:="Mean temp. anom."]%>%
   .[variable=="a2_tmx_mean",variable:="Max temp. anom."]%>%
@@ -737,7 +727,10 @@ var_imp2=data.table("variable"=names(rf.Model$variable.importance),"importance"=
   .[variable=="poverty",variable:="Lived poverty"]%>%
   .[variable=="eco_past",variable:="Eco. past"]%>%
   .[variable=="eco_future",variable:="Eco. future"]%>%
-  .[variable=="trust_govt",variable:="Trust govt."]%>%   .[variable=="trust_parlt",variable:="Trust parlmt."]%>%   .[variable=="dem_real",variable:="Real democracy"]%>%   .[variable=="dem_satisf",variable:="Satisf. with dem."]%>%
+  .[variable=="trust_govt",variable:="Trust govt."]%>%   
+  .[variable=="trust_parlt",variable:="Trust parlmt."]%>%   
+  .[variable=="dem_real",variable:="Real democracy"]%>%   
+  .[variable=="dem_satisf",variable:="Satisf. with dem."]%>%
   .[variable=="pov_condtn",variable:="Living conditions"]%>%
   .[variable=="pov_quintile",variable:="Income quintile"]%>%
   .[variable=="auth_party",variable:="Pro one-party rule"]%>%
@@ -759,13 +752,11 @@ var_imp2=data.table("variable"=names(rf.Model$variable.importance),"importance"=
   .[variable=="country",variable:="Country"]%>%
   .[variable=="rel_law",variable:="Pro religious law"]%>%
   .[variable=="dem_best",variable:="Democratic"]%>%
-  .[variable=="corruption",variable:="Corruption percep."]
+  .[variable=="phobia_relig",variable:="Relig. intolerance"]
 
 var_imp2=as.data.table(var_imp2%>%mutate(importance=importance/max(importance,na.rm=T)*100)%>%
                          arrange(desc(importance))%>%
                          head(15))
-
-
 
 n2=format(rf.Model$num.samples,big.mark = ",")
 acc2=round((1-rf.Model$prediction.error)*100,digits=1)
@@ -803,8 +794,10 @@ modelT = rfsrc.fast(formula = form_cc_agency,
                     mtry=8,nsplit=1, 
                     nodesize=5,forest = TRUE)
 
+pvp = plot.variable(modelT, xvar.names = c("news_radio","race","religion","edu"), npts=25,
+                    partial=T, class.type = "prob", target=2)
 
-pvp = plot.variable(modelT, xvar.names = c("cc_human","a2_tmp_mean","cc_life","auth_presi"), npts=25,
+pvp = plot.variable(modelT, xvar.names = c("cc_human","a2_tmp_mean","cc_life","news_radio"), npts=25,
                     partial=T, class.type = "prob", target=2)
 
 
@@ -830,25 +823,28 @@ pdp_all=merge.data.table(pdp_all,pdp,by="group",all=T)
 caption1="CC human cause"
 caption2="Temp. anom. (SD)"
 caption3="CC risk percep."
-caption4="Authoritarian"
+caption4="News (radio)"
 
+
+top=68
+gap=1.2
 g2= pdp_all%>%
   ggplot(aes(x=group))+
   geom_boxplot(aes(y=Prob1,group=group),color="#41b6c4",alpha=1,na.rm=T,width=0.5)+
   geom_ribbon(aes(x=x2,y=Prob2,ymax=ymax2,ymin=ymin2),color="#253494",alpha=0.2,fill="#253494")+
   geom_point(aes(y=Prob2),color="#253494")+
-  geom_boxplot(aes(y=Prob3,group=group),color="#addd8e",alpha=1,na.rm=T,width=0.5)+
-  geom_boxplot(aes(y=Prob4,group=group),color="#238443",alpha=1,na.rm=T,width=0.5)+
-  annotate("text",x=0.3,y=66.5,label=caption2,hjust = 0, size = 3.5,color="#253494",fontface="bold")+
-  annotate("pointrange",x=0,xmin=-0.2,xmax = 0.2,y=66.5,color="#253494",alpha=1,size=0.25)+
-  annotate("text",x=0.3,y=65,label=caption1,hjust = 0, size = 3.5,color="#41b6c4",fontface="bold")+
-  annotate("pointrange",x=0,xmin=-0.2,xmax = 0.2,y=65,color="#41b6c4",alpha=1,size=0.25)+
-  annotate("text",x=0.3,y=63.5,label=caption3,hjust = 0, size = 3.5,color="#addd8e",fontface="bold")+
-  annotate("pointrange",x=0,xmin=-0.2,xmax = 0.2,y=63.5,color="#addd8e",alpha=1,size=0.25)+
-  annotate("text",x=0.3,y=62,label=caption4,hjust = 0, size = 3.5,color="#238443",fontface="bold")+
-  annotate("pointrange",x=0,xmin=-0.2,xmax = 0.2,y=62,color="#238443",alpha=1,size=0.25)+
+  geom_boxplot(aes(y=Prob3,group=group),color="#238443",alpha=1,na.rm=T,width=0.5)+
+  geom_boxplot(aes(y=Prob4,group=group),color="#addd8e",alpha=1,na.rm=T,width=0.5)+
+  annotate("text",x=0.3,y=top,label=caption2,hjust = 0, size = 3.5,color="#253494",fontface="bold")+
+  annotate("pointrange",x=0,xmin=-0.2,xmax = 0.2,y=top,color="#253494",alpha=1,size=0.25)+
+  annotate("text",x=0.3,y=top-gap,label=caption1,hjust = 0, size = 3.5,color="#41b6c4",fontface="bold")+
+  annotate("pointrange",x=0,xmin=-0.2,xmax = 0.2,y=top-gap,color="#41b6c4",alpha=1,size=0.25)+
+  annotate("text",x=0.3,y=top-2*gap,label=caption4,hjust = 0, size = 3.5,color="#addd8e",fontface="bold")+
+  annotate("pointrange",x=0,xmin=-0.2,xmax = 0.2,y=top-2*gap,color="#addd8e",alpha=1,size=0.25)+
+  annotate("text",x=0.3,y=top-3*gap,label=caption3,hjust = 0, size = 3.5,color="#238443",fontface="bold")+
+  annotate("pointrange",x=0,xmin=-0.2,xmax = 0.2,y=top-3*gap,color="#238443",alpha=1,size=0.25)+
   scale_x_continuous(name=NULL,breaks = c(-2:2))+
-  scale_y_percent(limits=c(60,75),scale=1)+
+  scale_y_percent(limits=c(62,75),scale=1)+
   labs(caption="Likert scale | Temp. anom. (SD)")+
   ylab("Probability self-efficacy")+
   theme(plot.caption = element_text(face="plain",size=10,hjust = 0.5),
@@ -861,4 +857,19 @@ ggarrange(g1,g2,labels = c("A","B"))
 ggsave("~/GORA EKORRI/TFG_RRII/TeX/all_ccagency.png", width=19.05,height=10,units="cm")
 
 
+
+#summary
+
+# setnames(var_imp1,old="importance",new="imp1")
+# setnames(var_imp2,old="importance",new="imp2")
+# setnames(var_imp3,old="importance",new="imp3")
+# setnames(var_imp4,old="importance",new="imp4")
+# setnames(var_imp5,old="importance",new="imp5")
+# varimp=merge.data.table(var_imp1,var_imp2,by="variable",all=T)
+# varimp=merge.data.table(varimp,var_imp3,by="variable",all=T)
+# varimp=merge.data.table(varimp,var_imp4,by="variable",all=T)
+# varimp=merge.data.table(varimp,var_imp5,by="variable",all=T)
+# 
+# imp=data.table("var"=varimp$variable,"imp"=rowMeans(varimp[,2:6],na.rm=T))
+# imp=imp[,imp:=imp/max(imp)*100]
 
