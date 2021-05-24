@@ -22,13 +22,15 @@ data_aware=data_aware[complete.cases(data_aware)]
 data_human=as.data.table(data)%>%
   .[,c(5:7,10,14:80,91,102:109)]%>%
   .[!cc_human==1,b_human:=0]%>%
-  .[cc_human==1,b_human:=1]
+  .[cc_human==1,b_human:=1]%>%
+  .[,b_human:=as.factor(b_human)]
 data_human=data_human[complete.cases(data_human)]
 
 data_life=as.data.table(data)%>%
   .[,c(5:7,10,11,14:80,91,102:109)]%>%
   .[!cc_life>0,b_life:=0]%>%
-  .[cc_life>0,b_life:=1]
+  .[cc_life>0,b_life:=1]%>%
+  .[,b_life:=as.factor(b_life)]
 data_life=data_life[complete.cases(data_life)]
 
 
@@ -40,7 +42,8 @@ data_stop=data_stop[complete.cases(data_stop)]
 data_agency=as.data.table(data)%>%
   .[,c(5:7,10:80,91,102:109)]%>%
   .[cc_agency<0,b_agency:=0]%>%
-  .[cc_agency>=0,b_agency:=1]
+  .[cc_agency>=0,b_agency:=1]%>%
+  .[,b_agency:=as.factor(b_agency)]
 data_agency=data_agency[complete.cases(data_agency)]
 
 
@@ -183,7 +186,7 @@ g1
 set.seed(124)
 modelT = rfsrc.fast(formula = form_cc_aware, 
                     data = data_aware
-                    ,ntree = 500,
+                    ,ntree = 1000,
                     mtry=8,nsplit=1, 
                     nodesize=5,forest = TRUE)
 
@@ -333,6 +336,7 @@ modelT = rfsrc.fast(formula = form_cc_human,
                     ntree = 1000,
                     mtry=8,nsplit=1, 
                     nodesize=5,forest = TRUE)
+
 
 pvp = plot.variable(modelT, xvar.names = c("cc_drought","a2_tmp_mean","w_language","news_social"), npts=25,
                     partial=T, class.type = "prob", target=2)
@@ -485,12 +489,9 @@ g1
 set.seed(124)
 modelT = rfsrc.fast(formula = form_cc_life, 
                     data = data_life
-                    ,ntree = 500,
+                    ,ntree = 1000,
                     mtry=8,nsplit=1,nsize=5, 
                     forest = TRUE)
-
-pvp = plot.variable(modelT, xvar.names = c("pov_cash","race"), npts=25,
-                    partial=T,class.type = "prob", target=2)
 
 pvp = plot.variable(modelT, xvar.names = c("cc_human","auth_presi","cc_cond","cc_drought"), npts=25,
                     partial=T,class.type = "prob", target=2)
@@ -630,10 +631,9 @@ g1
 set.seed(124)
 modelT = rfsrc.fast(formula = form_cc_stop, 
                     data = data_stop,
-                    ntree = 500,
+                    ntree = 1000,
                     mtry=8,nsplit=1, 
                     nodesize=5,forest = TRUE)
-
 
 pvp = plot.variable(modelT, xvar.names = c("cc_human","a2_tmp_mean","cc_life","cc_cond"), npts=25,
                     partial=T, class.type = "prob", target=2)
@@ -790,12 +790,9 @@ g1
 set.seed(124)
 modelT = rfsrc.fast(formula = form_cc_agency, 
                     data = data_agency,
-                    ntree = 500,
+                    ntree = 1000,
                     mtry=8,nsplit=1, 
                     nodesize=5,forest = TRUE)
-
-pvp = plot.variable(modelT, xvar.names = c("news_radio","race","religion","edu"), npts=25,
-                    partial=T, class.type = "prob", target=2)
 
 pvp = plot.variable(modelT, xvar.names = c("cc_human","a2_tmp_mean","cc_life","news_radio"), npts=25,
                     partial=T, class.type = "prob", target=2)
