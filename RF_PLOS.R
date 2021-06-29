@@ -261,7 +261,7 @@ rf.Model = ranger(formula = form_cc_human,
                   classification = T,
                   verbose=TRUE)
 
-var_imp1=data.table("variable"=names(rf.Model$variable.importance),"importance"=unname(rf.Model$variable.importance))%>%
+var_imp2=data.table("variable"=names(rf.Model$variable.importance),"importance"=unname(rf.Model$variable.importance))%>%
   .[variable=="news_social",variable:="News soc. media"]%>%   
   .[variable=="news_internet",variable:="News internet"]%>%   
   .[variable=="internet",variable:="Internet use"]%>%
@@ -298,7 +298,7 @@ var_imp1=data.table("variable"=names(rf.Model$variable.importance),"importance"=
   .[variable=="w_language",variable:="Western language"]%>%
   .[variable=="religion",variable:="Religion"]
   
-var_imp1=as.data.table(var_imp1%>%mutate(importance=importance/max(importance,na.rm=T)*100)%>%
+var_imp2=as.data.table(var_imp2%>%mutate(importance=importance/max(importance,na.rm=T)*100)%>%
                          arrange(desc(importance))%>%
                          head(15))
 
@@ -308,7 +308,7 @@ acc1=round((1-rf.Model$prediction.error)*100,digits=1)
 caption11=(paste0("Accuracy: ",acc1,"%"))
 caption12=paste0("N = ",n1)
 
-g1=var_imp1%>%
+g3=var_imp2%>%
   dplyr::arrange(desc(importance))%>%
   ggplot(aes(reorder(variable,importance),importance))+
   geom_col(aes(fill=importance),colour="black")+
@@ -326,7 +326,7 @@ g1=var_imp1%>%
         axis.line.y =  element_blank(),
         plot.margin = ggplot2::margin(1,1.25,0.25,0.25,"cm"))
 
-g1
+g3
 
 
 # PDP cc_human
@@ -370,20 +370,20 @@ caption4="News soc. media"
 top=55
 gap=0.6
   
-g2= pdp_all%>%
+g4= pdp_all%>%
   ggplot()+
   geom_ribbon(aes(x=x2,ymax=ymax2,ymin=ymin2),alpha=0.2, color="#253494",fill="#253494")+
   geom_point(aes(x=x2,y=Prob2),color="#253494",alpha=1,size=1,shape=16)+
   geom_boxplot(aes(x=group,y=Prob1,group=group),color="#41b6c4",alpha=1,na.rm=T,width=0.5)+
   geom_boxplot(aes(x=group,y=Prob3,group=group),color="#238443",alpha=1,na.rm=T,width=0.5)+
   geom_boxplot(aes(x=group,y=Prob4,group=group),color="#addd8e",alpha=1,na.rm=T,width=0.5)+
-  annotate("text",x=-1.7,y=top-3*gap,label=caption3,hjust = 0, size = 3.5,color="#238443",fontface="bold")+
+  annotate("text",x=-1.7,y=top-3*gap,label=caption3,hjust = 0, size = 3,color="#238443",fontface="bold")+
   annotate("pointrange",x=-2,xmin=-2.2,xmax = -1.8,y=top-3*gap,color="#238443",alpha=1,size=0.25)+
-  annotate("text",x=-1.7,y=top,label=caption2,hjust = 0, size = 3.5,color="#253494",fontface="bold")+
+  annotate("text",x=-1.7,y=top,label=caption2,hjust = 0, size = 3,color="#253494",fontface="bold")+
   annotate("pointrange",x=-2,xmin=-2.2,xmax = -1.8,y=top,color="#253494",alpha=1,size=0.25)+
-  annotate("text",x=-1.7,y=top-2*gap,label=caption4,hjust = 0, size = 3.5,color="#addd8e",fontface="bold")+
+  annotate("text",x=-1.7,y=top-2*gap,label=caption4,hjust = 0, size = 3,color="#addd8e",fontface="bold")+
   annotate("pointrange",x=-2,xmin=-2.2,xmax = -1.8,y=top-2*gap,color="#addd8e",alpha=1,size=0.25)+
-  annotate("text",x=-1.7,y=top-gap,label=caption1,hjust = 0, size = 3.5,color="#41b6c4",fontface="bold")+
+  annotate("text",x=-1.7,y=top-gap,label=caption1,hjust = 0, size = 3,color="#41b6c4",fontface="bold")+
   annotate("pointrange",x=-2,xmin=-2.2,xmax = -1.8,y=top-gap,color="#41b6c4",alpha=1,size=0.25)+
   scale_x_continuous(name=NULL,breaks = c(-2:2))+
   scale_y_percent(limits=c(49.5,55.2),scale=1)+
@@ -392,11 +392,6 @@ g2= pdp_all%>%
   theme(plot.caption = element_text(face="plain",size=10,hjust = 0.5),
         panel.grid = element_line(linetype="dotted"),
         plot.margin = ggplot2::margin(1,0.25,0.25,0.25,"cm"))
-g2
-
-
-ggarrange(g1,g2,labels = c("A","B"))
-ggsave("~/GORA EKORRI/TFG_RRII/TeX/all_cchuman.png", width=19.05,height=10,units="cm")
 
 
 
@@ -415,8 +410,7 @@ rf.Model = ranger(formula = form_cc_life,
                   # local.importance = T,
                   verbose=TRUE)
 
-rf.Model
-var_imp2=data.table("variable"=names(rf.Model$variable.importance),"importance"=unname(rf.Model$variable.importance))%>%
+var_imp3=data.table("variable"=names(rf.Model$variable.importance),"importance"=unname(rf.Model$variable.importance))%>%
   .[variable=="news_social",variable:="News soc. media"]%>%   
   .[variable=="news_internet",variable:="News internet"]%>%   
   .[variable=="internet",variable:="Internet use"]%>%
@@ -454,7 +448,7 @@ var_imp2=data.table("variable"=names(rf.Model$variable.importance),"importance"=
   .[variable=="country",variable:="Country"]%>%
   .[variable=="race",variable:="Ethnic group"]
 
-var_imp2=as.data.table(var_imp2%>%mutate(importance=importance/max(importance,na.rm=T)*100)%>%
+var_imp3=as.data.table(var_imp3%>%mutate(importance=importance/max(importance,na.rm=T)*100)%>%
                          arrange(desc(importance))%>%
                          head(15))
 
@@ -464,7 +458,7 @@ acc2=round((1-rf.Model$prediction.error)*100,digits=1)
 caption21=(paste0("Accuracy: ",acc2,"%"))
 caption22=paste0("N = ",n2)
 
-g1=var_imp2%>%
+g5=var_imp3%>%
   dplyr::arrange(desc(importance))%>%
   ggplot(aes(reorder(variable,importance),importance))+
   geom_col(aes(fill=importance),colour="black")+
@@ -509,6 +503,7 @@ pdp_box2=data.table(Prob1=pvp$pData[[1]]$yhat)%>%
   .[,Prob1:=pvp$pData[[1]]$yhat*100]%>%
   .[,N:=1:length(pvp$pData[[1]]$yhat)+modelT$n]
 
+
 pdp_all=merge.data.table(pdp_box1,pdp_box2,by="N",all=T)
 
 
@@ -520,19 +515,19 @@ caption4="Drought percep."
 top=74.8
 gap=1.3
 
-g2= pdp_all%>%
+g6= pdp_all%>%
   ggplot(aes(x=group))+
   geom_boxplot(aes(y=Prob1,group=group),color="#253494",alpha=1,na.rm=T,width=0.5)+
   geom_boxplot(aes(y=Prob2,group=group),color="#238443",alpha=1,na.rm=T,width=0.5)+
   geom_boxplot(aes(y=Prob3,group=group),color="#addd8e",alpha=1,na.rm=T,width=0.5)+
   geom_boxplot(aes(y=Prob4,group=group),color="#41b6c4",alpha=1,na.rm=T,width=0.5)+
-  annotate("text",x=-1.7,y=top,label=caption1,hjust = 0, size = 3.5,color="#253494",fontface="bold")+
+  annotate("text",x=-1.7,y=top,label=caption1,hjust = 0, size = 3,color="#253494",fontface="bold")+
   annotate("pointrange",x=-2,xmin=-2.2,xmax = -1.8,y=top,color="#253494",alpha=1,size=0.25)+
-  annotate("text",x=-1.7,y=top-2*gap,label=caption3,hjust = 0, size = 3.5,color="#addd8e",fontface="bold")+
+  annotate("text",x=-1.7,y=top-2*gap,label=caption3,hjust = 0, size = 3,color="#addd8e",fontface="bold")+
   annotate("pointrange",x=-2,xmin=-2.2,xmax = -1.8,y=top-2*gap,color="#addd8e",alpha=1,size=0.25)+
-  annotate("text",x=-1.7,y=top-gap,label=caption4,hjust = 0, size = 3.5,color="#41b6c4",fontface="bold")+
+  annotate("text",x=-1.7,y=top-gap,label=caption4,hjust = 0, size = 3,color="#41b6c4",fontface="bold")+
   annotate("pointrange",x=-2,xmin=-2.2,xmax = -1.8,y=top-gap,color="#41b6c4",alpha=1,size=0.25)+
-  annotate("text",x=-1.7,y=top-3*gap,label=caption2,hjust = 0, size = 3.5,color="#238443",fontface="bold")+
+  annotate("text",x=-1.7,y=top-3*gap,label=caption2,hjust = 0, size = 3,color="#238443",fontface="bold")+
   annotate("pointrange",x=-2,xmin=-2.2,xmax = -1.8,y=top-3*gap,color="#238443",alpha=1,size=0.25)+
   scale_x_continuous(name=NULL,breaks = c(-2:2))+
   scale_y_percent(limits=c(60,75),scale=1)+
@@ -563,10 +558,14 @@ rf.Model = ranger(formula = form_cc_stop,
                   classification = T,
                   verbose=TRUE)
 
-var_imp1=data.table("variable"=names(rf.Model$variable.importance),"importance"=unname(rf.Model$variable.importance))%>%
-    .[variable=="news_social",variable:="News soc. media"]%>%   .[variable=="news_internet",variable:="News internet"]%>%   .[variable=="internet",variable:="Internet use"]%>%
+var_imp4=data.table("variable"=names(rf.Model$variable.importance),"importance"=unname(rf.Model$variable.importance))%>%
+  .[variable=="news_social",variable:="News soc. media"]%>%   
+  .[variable=="news_internet",variable:="News internet"]%>%   
+  .[variable=="internet",variable:="Internet use"]%>%
   .[variable=="cc_cond",variable:="Agric. condn."]%>%
-  .[variable=="news_papers",variable:="Newspapers"]%>%   .[variable=="news_television",variable:="News TV"]%>%   .[variable=="news_radio",variable:="News radio"]%>%
+  .[variable=="news_papers",variable:="Newspapers"]%>%   
+  .[variable=="news_television",variable:="News TV"]%>%   
+  .[variable=="news_radio",variable:="News radio"]%>%
   .[variable=="pol_talk",variable:="Talks politics"]%>%
   .[variable=="a2_tmp_mean",variable:="Mean temp. anom."]%>%
   .[variable=="a2_tmx_mean",variable:="Max temp. anom."]%>%
@@ -596,7 +595,7 @@ var_imp1=data.table("variable"=names(rf.Model$variable.importance),"importance"=
   .[variable=="corruption",variable:="Corruption percep."]%>%
   .[variable=="religion",variable:="Religion"]
 
-var_imp1=as.data.table(var_imp1%>%mutate(importance=importance/max(importance,na.rm=T)*100)%>%
+var_imp4=as.data.table(var_imp4%>%mutate(importance=importance/max(importance,na.rm=T)*100)%>%
                          arrange(desc(importance))%>%
                          head(15))
 
@@ -606,7 +605,7 @@ acc1=round((1-rf.Model$prediction.error)*100,digits=1)
 caption11=(paste0("Accuracy: ",acc1,"%"))
 caption12=paste0("N = ",n1)
 
-g1=var_imp1%>%
+g7=var_imp4%>%
   dplyr::arrange(desc(importance))%>%
   ggplot(aes(reorder(variable,importance),importance))+
   geom_col(aes(fill=importance),colour="black")+
@@ -635,7 +634,7 @@ modelT = rfsrc.fast(formula = form_cc_stop,
                     mtry=8,nsplit=1, 
                     nodesize=5,forest = TRUE)
 
-pvp = plot.variable(modelT, xvar.names = c("cc_human","a2_tmp_mean","cc_life","cc_cond"), npts=25,
+pvp = plot.variable(modelT, xvar.names = c("internet","news_internet"), npts=25,
                     partial=T, class.type = "prob", target=2)
 
 pdp=data.table("group"=pvp$pData[[2]]$x.uniq,"Prob2"=pvp$pData[[2]]$yhat*100,"x2"=pvp$pData[[2]]$x.uniq,
@@ -662,24 +661,24 @@ caption2="Temp. anom. (SD)"
 caption3="CC risk percep."
 caption4="Agric. cond."
 
-top=84.8
-gap=1.1
+top=73.8
+gap=1.5
   
-g2= pdp_all%>%
+g8= pdp_all%>%
   ggplot(aes(x=group))+
   geom_boxplot(aes(y=Prob1,group=group),color="#41b6c4",alpha=1,na.rm=T,width=0.5)+
   geom_ribbon(aes(x=x2,y=Prob2,ymax=ymax2,ymin=ymin2),color="#253494",alpha=0.2,fill="#253494")+
   geom_point(aes(y=Prob2),color="#253494")+
   geom_boxplot(aes(y=Prob3,group=group),color="#238443",alpha=1,na.rm=T,width=0.5)+
   geom_boxplot(aes(y=Prob4,group=group),color="#addd8e",alpha=1,na.rm=T,width=0.5)+
-  annotate("text",x=-1.7,y=top,label=caption2,hjust = 0, size = 3.5,color="#253494",fontface="bold")+
-  annotate("pointrange",x=-2,xmin=-2.2,xmax = -1.8,y=top,color="#253494",alpha=1,size=0.25)+
-  annotate("text",x=-1.7,y=top-2*gap,label=caption4,hjust = 0, size = 3.5,color="#addd8e",fontface="bold")+
-  annotate("pointrange",x=-2,xmin=-2.2,xmax = -1.8,y=top-2*gap,color="#addd8e",alpha=1,size=0.25)+
-  annotate("text",x=-1.7,y=top-gap,label=caption1,hjust = 0, size = 3.5,color="#41b6c4",fontface="bold")+
-  annotate("pointrange",x=-2,xmin=-2.2,xmax = -1.8,y=top-gap,color="#41b6c4",alpha=1,size=0.25)+
-  annotate("text",x=-1.7,y=top-3*gap,label=caption3,hjust = 0, size = 3.5,color="#238443",fontface="bold")+
-  annotate("pointrange",x=-2,xmin=-2.2,xmax = -1.8,y=top-3*gap,color="#238443",alpha=1,size=0.25)+
+  annotate("text",x=0.3,y=top,label=caption2,hjust = 0, size = 3,color="#253494",fontface="bold")+
+  annotate("pointrange",x=0,xmin=-0.2,xmax=0.2,y=top,color="#253494",alpha=1,size=0.25)+
+  annotate("text",x=0.3,y=top-2*gap,label=caption4,hjust = 0, size = 3,color="#addd8e",fontface="bold")+
+  annotate("pointrange",x=0,xmin=-0.2,xmax=0.2,y=top-2*gap,color="#addd8e",alpha=1,size=0.25)+
+  annotate("text",x=0.3,y=top-gap,label=caption1,hjust = 0, size = 3,color="#41b6c4",fontface="bold")+
+  annotate("pointrange",x=0,xmin=-0.2,xmax=0.2,y=top-gap,color="#41b6c4",alpha=1,size=0.25)+
+  annotate("text",x=0.3,y=top-3*gap,label=caption3,hjust = 0, size = 3,color="#238443",fontface="bold")+
+  annotate("pointrange",x=0,xmin=-0.2,xmax=0.2,y=top-3*gap,color="#238443",alpha=1,size=0.25)+
   scale_x_continuous(name=NULL,breaks = c(-2:2))+
   scale_y_percent(limits=c(67,84),scale=1)+
   labs(caption="Likert scale | Temp. anom. (SD)")+
@@ -687,7 +686,7 @@ g2= pdp_all%>%
   theme(plot.caption = element_text(face="plain",size=10,hjust = 0.5),
         panel.grid = element_line(linetype="dotted"),
         plot.margin = ggplot2::margin(1,0.25,0.25,0.25,"cm"))
-g2
+g8
   
 ggarrange(g1,g2,labels = c("A","B"))
 ggsave("~/GORA EKORRI/TFG_RRII/TeX/all_ccstop.png", width=19.05,height=10,units="cm")
@@ -710,7 +709,7 @@ rf.Model = ranger(formula = form_cc_agency,
                   verbose=TRUE)
 
 
-var_imp2=data.table("variable"=names(rf.Model$variable.importance),"importance"=unname(rf.Model$variable.importance))%>%
+var_imp5=data.table("variable"=names(rf.Model$variable.importance),"importance"=unname(rf.Model$variable.importance))%>%
   .[variable=="news_social",variable:="News soc. media"]%>%   
   .[variable=="news_internet",variable:="News internet"]%>%   
   .[variable=="internet",variable:="Internet use"]%>%
@@ -754,7 +753,7 @@ var_imp2=data.table("variable"=names(rf.Model$variable.importance),"importance"=
   .[variable=="dem_best",variable:="Democratic"]%>%
   .[variable=="phobia_relig",variable:="Relig. intolerance"]
 
-var_imp2=as.data.table(var_imp2%>%mutate(importance=importance/max(importance,na.rm=T)*100)%>%
+var_imp5=as.data.table(var_imp5%>%mutate(importance=importance/max(importance,na.rm=T)*100)%>%
                          arrange(desc(importance))%>%
                          head(15))
 
@@ -765,7 +764,7 @@ caption21=(paste0("Accuracy: ",acc2,"%"))
 caption22=paste0("N = ",n2)
 
 limit=100
-g1=var_imp2%>%
+g9=var_imp5%>%
   dplyr::arrange(desc(importance))%>%
   ggplot(aes(reorder(variable,importance),importance))+
   geom_col(aes(fill=importance),colour="black")+
@@ -825,20 +824,20 @@ caption4="News (radio)"
 
 top=68
 gap=1.2
-g2= pdp_all%>%
+g10= pdp_all%>%
   ggplot(aes(x=group))+
   geom_boxplot(aes(y=Prob1,group=group),color="#41b6c4",alpha=1,na.rm=T,width=0.5)+
   geom_ribbon(aes(x=x2,y=Prob2,ymax=ymax2,ymin=ymin2),color="#253494",alpha=0.2,fill="#253494")+
   geom_point(aes(y=Prob2),color="#253494")+
   geom_boxplot(aes(y=Prob3,group=group),color="#238443",alpha=1,na.rm=T,width=0.5)+
   geom_boxplot(aes(y=Prob4,group=group),color="#addd8e",alpha=1,na.rm=T,width=0.5)+
-  annotate("text",x=0.3,y=top,label=caption2,hjust = 0, size = 3.5,color="#253494",fontface="bold")+
+  annotate("text",x=0.3,y=top,label=caption2,hjust = 0, size = 3,color="#253494",fontface="bold")+
   annotate("pointrange",x=0,xmin=-0.2,xmax = 0.2,y=top,color="#253494",alpha=1,size=0.25)+
-  annotate("text",x=0.3,y=top-gap,label=caption1,hjust = 0, size = 3.5,color="#41b6c4",fontface="bold")+
+  annotate("text",x=0.3,y=top-gap,label=caption1,hjust = 0, size = 3,color="#41b6c4",fontface="bold")+
   annotate("pointrange",x=0,xmin=-0.2,xmax = 0.2,y=top-gap,color="#41b6c4",alpha=1,size=0.25)+
-  annotate("text",x=0.3,y=top-2*gap,label=caption4,hjust = 0, size = 3.5,color="#addd8e",fontface="bold")+
+  annotate("text",x=0.3,y=top-2*gap,label=caption4,hjust = 0, size = 3,color="#addd8e",fontface="bold")+
   annotate("pointrange",x=0,xmin=-0.2,xmax = 0.2,y=top-2*gap,color="#addd8e",alpha=1,size=0.25)+
-  annotate("text",x=0.3,y=top-3*gap,label=caption3,hjust = 0, size = 3.5,color="#238443",fontface="bold")+
+  annotate("text",x=0.3,y=top-3*gap,label=caption3,hjust = 0, size = 3,color="#238443",fontface="bold")+
   annotate("pointrange",x=0,xmin=-0.2,xmax = 0.2,y=top-3*gap,color="#238443",alpha=1,size=0.25)+
   scale_x_continuous(name=NULL,breaks = c(-2:2))+
   scale_y_percent(limits=c(62,75),scale=1)+
@@ -855,18 +854,28 @@ ggsave("~/GORA EKORRI/TFG_RRII/TeX/all_ccagency.png", width=19.05,height=10,unit
 
 
 
+ggarrange(g1,g2,g3,g4,g5,g6,nrow=3,ncol=2,labels = c("A","B","C","D","E","F"),font.label=list(size=11))
+ggsave("~/GORA EKORRI/TFG_RRII/TeX/first.png", width=19.05,height=22.23,units="cm")
+
+ggarrange(g7,g8,g9,g10,nrow=2,ncol=2,labels = c("A","B","C","D","E"),font.label=list(size=11))
+ggsave("~/GORA EKORRI/TFG_RRII/TeX/second.png", width=19.05,height=14.82,units="cm")
+
+
+
+
+
 #summary
 
-# setnames(var_imp1,old="importance",new="imp1")
-# setnames(var_imp2,old="importance",new="imp2")
-# setnames(var_imp3,old="importance",new="imp3")
-# setnames(var_imp4,old="importance",new="imp4")
-# setnames(var_imp5,old="importance",new="imp5")
-# varimp=merge.data.table(var_imp1,var_imp2,by="variable",all=T)
-# varimp=merge.data.table(varimp,var_imp3,by="variable",all=T)
-# varimp=merge.data.table(varimp,var_imp4,by="variable",all=T)
-# varimp=merge.data.table(varimp,var_imp5,by="variable",all=T)
-# 
-# imp=data.table("var"=varimp$variable,"imp"=rowMeans(varimp[,2:6],na.rm=T))
-# imp=imp[,imp:=imp/max(imp)*100]
+setnames(var_imp1,old="importance",new="imp1")
+setnames(var_imp2,old="importance",new="imp2")
+setnames(var_imp3,old="importance",new="imp3")
+setnames(var_imp4,old="importance",new="imp4")
+setnames(var_imp5,old="importance",new="imp5")
+varimp=merge.data.table(var_imp1,var_imp2,by="variable",all=T)
+varimp=merge.data.table(varimp,var_imp3,by="variable",all=T)
+varimp=merge.data.table(varimp,var_imp4,by="variable",all=T)
+varimp=merge.data.table(varimp,var_imp5,by="variable",all=T)
+
+imp=data.table("var"=varimp$variable,"imp"=rowMeans(varimp[,2:6],na.rm=T))
+imp=imp[,imp:=imp/max(imp)*100]
 
