@@ -1,6 +1,9 @@
-pacman::p_load(ggpubr,RColorBrewer,missRanger,ranger,utils,zip,
-               randomForestSRC,rfPermute,tidyverse,curl,
-               dplyr,data.table, dtplyr, tidyfast, ggplot2,scales,hrbrthemes)
+
+##DEPENDENCIES
+
+pacman::p_load(ggpubr,RColorBrewer,ranger,utils,zip,
+               randomForestSRC,tidyverse,curl,dplyr,data.table, dtplyr,
+               tidyfast,ggplot2,scales,hrbrthemes)
 
 theme_set(theme_pubr(base_size=10,base_family="sans"))
 
@@ -33,11 +36,9 @@ data_life=as.data.table(data)%>%
   .[,b_life:=as.factor(b_life)]
 data_life=data_life[complete.cases(data_life)]
 
-
 data_stop=as.data.table(data)%>%
   .[,c(5:7,10:12,14:80,91,102:109)]
 data_stop=data_stop[complete.cases(data_stop)]
-
 
 data_agency=as.data.table(data)%>%
   .[,c(5:7,10:80,91,102:109)]%>%
@@ -49,7 +50,7 @@ data_agency=data_agency[complete.cases(data_agency)]
 
 
 
-#Formulas
+## FORMULAS FOR RF 
 
 form_cc_aware=cc_aware~
   cc_cond+cc_drought+cc_flood+religion+religious+rel_group+rel_law+migrate+pol_talk+pol_march+dem_best+
@@ -103,7 +104,9 @@ form_cc_agency=b_agency~
 
 
 
-#CC_AWARE
+## RANDOM FOREST ANALYSIS AND GRAPHS
+
+#CC_AWARE importance
 
 set.seed(124)
 rf.Model = ranger(formula = form_cc_aware, 
@@ -178,10 +181,9 @@ g1=var_imp1%>%
         axis.line.y =  element_blank(),
         plot.margin = ggplot2::margin(1,1.25,0.25,0.25,"cm"))
 
-g1
 
 
-##PDP CC AWARE
+# CC_AWARE PDP
 
 set.seed(124)
 modelT = rfsrc.fast(formula = form_cc_aware, 
@@ -240,16 +242,8 @@ g2= pdp_all%>%
         plot.margin = ggplot2::margin(1,0.25,0.25,0.25,"cm"))
   
 
-g2
 
-
-ggarrange(g1,g2,nrow=1,labels=c("A", "B"))
-ggsave("~/GORA EKORRI/TFG_RRII/TeX/all_ccaware.png", width=19.05,height=10,units="cm")
-
-
-
-
-## CC_human
+# CC_HUMAN importance
 
 set.seed(124)
 rf.Model = ranger(formula = form_cc_human, 
@@ -326,10 +320,10 @@ g3=var_imp2%>%
         axis.line.y =  element_blank(),
         plot.margin = ggplot2::margin(1,1.25,0.25,0.25,"cm"))
 
-g3
 
 
-# PDP cc_human
+# CC_HUMAN PDP 
+
 set.seed(124)
 modelT = rfsrc.fast(formula = form_cc_human, 
                     data = data_human,
@@ -396,8 +390,7 @@ g4= pdp_all%>%
 
 
 
-
-## CC_life
+# CC RISK PERCEPTION importance
 
 
 set.seed(124)
@@ -475,10 +468,10 @@ g5=var_imp3%>%
         axis.ticks.y = element_line(colour="white"),
         axis.line.y =  element_blank(),
         plot.margin = ggplot2::margin(1,1.25,0.25,0.25,"cm"))
-g1
 
 
-### PDP cc_life
+
+# CC RISK PERCEPTION PDP
 
 set.seed(124)
 modelT = rfsrc.fast(formula = form_cc_life, 
@@ -536,17 +529,11 @@ g6= pdp_all%>%
   theme(plot.caption = element_text(face="plain",size=10,hjust = 0.5),
         panel.grid = element_line(linetype="dotted"),
         plot.margin = ggplot2::margin(1,0.25,0.25,0.25,"cm"))
-g2
-
-
-ggarrange(g1,g2,labels = c("A","B"))
-ggsave("~/GORA EKORRI/TFG_RRII/TeX/all_cclife.png", width=19.05,height=10,units="cm")
 
 
 
 
-
-## CC STOP
+# NEED TO STOP CC importance
 
 set.seed(124)
 rf.Model = ranger(formula = form_cc_stop, 
@@ -622,11 +609,12 @@ g7=var_imp4%>%
         axis.ticks.y = element_line(colour="white"),
         axis.line.y =  element_blank(),
         plot.margin = ggplot2::margin(1,1.25,0.25,0.25,"cm"))
-g1
 
 
 
-# PDP cc_stop
+
+# NEED TO STOP CC PDP
+
 set.seed(124)
 modelT = rfsrc.fast(formula = form_cc_stop, 
                     data = data_stop,
@@ -686,18 +674,12 @@ g8= pdp_all%>%
   theme(plot.caption = element_text(face="plain",size=10,hjust = 0.5),
         panel.grid = element_line(linetype="dotted"),
         plot.margin = ggplot2::margin(1,0.25,0.25,0.25,"cm"))
-g8
-  
-ggarrange(g1,g2,labels = c("A","B"))
-ggsave("~/GORA EKORRI/TFG_RRII/TeX/all_ccstop.png", width=19.05,height=10,units="cm")
 
 
 
 
 
-
-
-## CC AGENCY
+## SELF-EFFICACY importance
 
 set.seed(124)
 rf.Model = ranger(formula = form_cc_agency, 
@@ -781,10 +763,10 @@ g9=var_imp5%>%
         axis.ticks.y = element_line(colour="white"),
         axis.line.y =  element_blank(),
         plot.margin = ggplot2::margin(1,1.25,0.25,0.25,"cm"))
-g1
 
 
-# PDP cc_agency
+
+# SELF-EFFICACY PDP
 
 set.seed(124)
 modelT = rfsrc.fast(formula = form_cc_agency, 
@@ -846,25 +828,23 @@ g10= pdp_all%>%
   theme(plot.caption = element_text(face="plain",size=10,hjust = 0.5),
         panel.grid = element_line(linetype="dotted"),
         plot.margin = ggplot2::margin(1,0.25,0.25,0.25,"cm"))
-g2
-
-ggarrange(g1,g2,labels = c("A","B"))
-
-ggsave("~/GORA EKORRI/TFG_RRII/TeX/all_ccagency.png", width=19.05,height=10,units="cm")
 
 
+
+
+## Rearrangement of graphs
 
 ggarrange(g1,g2,g3,g4,g5,g6,nrow=3,ncol=2,labels = c("A","B","C","D","E","F"),font.label=list(size=11))
-ggsave("~/GORA EKORRI/TFG_RRII/TeX/first.png", width=19.05,height=22.23,units="cm")
+ggsave("fig1.png", width=19.05,height=22.23,units="cm")
 
 ggarrange(g7,g8,g9,g10,nrow=2,ncol=2,labels = c("A","B","C","D","E"),font.label=list(size=11))
-ggsave("~/GORA EKORRI/TFG_RRII/TeX/second.png", width=19.05,height=14.82,units="cm")
+ggsave("fig2.png", width=19.05,height=14.82,units="cm")
 
 
 
 
 
-#summary
+# Overall importance 
 
 setnames(var_imp1,old="importance",new="imp1")
 setnames(var_imp2,old="importance",new="imp2")
