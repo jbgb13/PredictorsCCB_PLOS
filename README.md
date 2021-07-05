@@ -1,6 +1,6 @@
 # What shapes climate change beliefs (CCBs) in Africa
 
-Code for replicating the manuscript of "What shapes climate change beliefs in Africa? A random forest approach", under review in PLoS ONE
+Code for replicating the manuscript of "What shapes climate change beliefs in Africa? A random forest approach", under review in PLoS ONE. Authors: Juan B. González and [Alfonso Sanchez](https://www.alfsanchez.com/). 
 
 1. [Code for random forest analysis](https://github.com/jbgb13/PredictorsCCB_PLOS/blob/main/RF_PLOS.R)
 
