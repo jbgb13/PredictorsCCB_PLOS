@@ -1,11 +1,11 @@
-# PredictorsCCP_PLOS
+# What shapes climate change beliefs (CCBs) in Africa
 
-Code for replicating the preprint of "What shapes climate change perceptions in Africa". 
+Code for replicating the manuscript of "What shapes climate change beliefs in Africa? A random forest approach", under review in PLoS ONE
 
-1. [Code for RF Analysis and graphics](https://github.com/jbgb13/PredictorsCCP_PLOS/blob/main/RF_PLOS.R)
+1. [Code for random forest analysis](https://github.com/jbgb13/PredictorsCCB_PLOS/blob/main/RF_PLOS.R)
 
-2. [Data](https://github.com/jbgb13/PredictorsCCP_PLOS/raw/main/data.zip)
+2. [Data](https://github.com/jbgb13/PredictorsCCB_PLOS/raw/main/data.zip)
 
-3. [Figures](https://github.com/jbgb13/PredictorsCCP_PLOS/tree/main/PACE%20Corrected)
+3. [Figures](https://github.com/jbgb13/PredictorsCCB_PLOS/tree/main/PACE%20Corrected)
 
-4. [Pre-print](https://github.com/jbgb13/PredictorsCCP_PLOS/blob/main/PLOS_One_Word_Template.docx)
+4. [Manuscript](https://github.com/jbgb13/PredictorsCCB_PLOS/blob/main/PLOS_One_Word_Template.docx)
