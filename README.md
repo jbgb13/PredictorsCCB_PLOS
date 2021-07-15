@@ -8,4 +8,4 @@ Code for replicating the analysis of "What shapes climate change beliefs in Afri
 
 3. [Figures](https://github.com/jbgb13/PredictorsCCB_PLOS/tree/main/PACE%20Corrected)
 
-4. [Manuscript](https://github.com/jbgb13/PredictorsCCB_PLOS/raw/main/Manuscript%20-%20CCBs%20in%20Africa.pdf)
+4. [Manuscript](https://github.com/jbgb13/PredictorsCCB_PLOS/raw/main/Manuscript.pdf)
