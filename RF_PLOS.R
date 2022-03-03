@@ -381,7 +381,7 @@ g4= pdp_all%>%
   annotate("pointrange",x=-2,xmin=-2.2,xmax = -1.8,y=top-gap,color="#41b6c4",alpha=1,size=0.25)+
   scale_x_continuous(name=NULL,breaks = c(-2:2))+
   scale_y_percent(limits=c(49.5,55.2),scale=1)+
-  labs(caption="Likert scale | Weather anomaly (SD)")+
+  labs(caption="Likert scale | Temp. anom. (SD)")+
   ylab("Probability CC human cause")+
   theme(plot.caption = element_text(face="plain",size=10,hjust = 0.5),
         panel.grid = element_line(linetype="dotted"),
@@ -833,7 +833,6 @@ g10= pdp_all%>%
 
 
 ## Rearrangement of graphs
-
 ggarrange(g1,g2,g3,g4,g5,g6,nrow=3,ncol=2,labels = c("A","B","C","D","E","F"),font.label=list(size=11))
 ggsave("fig1.png", width=19.05,height=22.23,units="cm")
 
