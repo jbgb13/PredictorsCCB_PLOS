@@ -242,7 +242,6 @@ g2= pdp_all%>%
         plot.margin = ggplot2::margin(1,0.25,0.25,0.25,"cm"))
   
 
-
 # CC_HUMAN importance
 
 set.seed(124)
@@ -389,7 +388,6 @@ g4= pdp_all%>%
 
 
 
-
 # CC RISK PERCEPTION importance
 
 
@@ -532,7 +530,6 @@ g6= pdp_all%>%
 
 
 
-
 # NEED TO STOP CC importance
 
 set.seed(124)
@@ -622,7 +619,7 @@ modelT = rfsrc.fast(formula = form_cc_stop,
                     mtry=8,nsplit=1, 
                     nodesize=5,forest = TRUE)
 
-pvp = plot.variable(modelT, xvar.names = c("internet","news_internet"), npts=25,
+pvp = plot.variable(modelT, xvar.names = c("cc_human","a2_tmp_mean","cc_life",'cc_cond'), npts=25,
                     partial=T, class.type = "prob", target=2)
 
 pdp=data.table("group"=pvp$pData[[2]]$x.uniq,"Prob2"=pvp$pData[[2]]$yhat*100,"x2"=pvp$pData[[2]]$x.uniq,
@@ -674,7 +671,6 @@ g8= pdp_all%>%
   theme(plot.caption = element_text(face="plain",size=10,hjust = 0.5),
         panel.grid = element_line(linetype="dotted"),
         plot.margin = ggplot2::margin(1,0.25,0.25,0.25,"cm"))
-
 
 
 
